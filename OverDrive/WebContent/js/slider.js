@@ -1,7 +1,6 @@
-
-
+/*
 $(document).on('ready', function() {
-      
+     
       $(".regular").slick({
         dots: false,
         infinite: true,
@@ -9,3 +8,4 @@ $(document).on('ready', function() {
         slidesToScroll: 1
       });           
     });
+*/

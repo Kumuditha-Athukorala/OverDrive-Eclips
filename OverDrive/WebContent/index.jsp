@@ -11,8 +11,11 @@
 <link rel="stylesheet" type="text/css" href="./slick/slick-theme.css">
 <link rel="stylesheet" href="./css/index.css">
 
+
+	
 <style type="text/css">
 </style>
+
 </head>
 <body>
 
@@ -37,54 +40,35 @@
 	</div>
 	<div class="drop-down-container">
 		<ul>
-			<li><select>
-					<option value="">All Makes</option>
-					<option value="saab">Audi</option>
-					<option value="mercedes">BMW</option>
-					<option value="audi">BENZ</option>
+			<li><select id="carBrands">
+					<option value="All Brands">All Brands</option>
 			</select></li>
-			<li><select>
-					<option value="">All Models</option>
-					<option value="saab">A1</option>
-					<option value="mercedes">E501</option>
-					<option value="audi">S23</option>
+
+			<li><select id="carTypes">
+					<option value="All Types">All Types</option>
 			</select></li>
-			<li><select>
-					<option value="">Min Price</option>
-					<option value="saab">20000</option>
-					<option value="mercedes">10000</option>
-					<option value="audi">8000</option>
+
+			<li><select id="minPrice">
+					<option value="0">Min Value</option>
+					<option value="50000">50000</option>
+					<option value="100000">100000</option>
 			</select></li>
-			<li><select>
-					<option value="volvo">Max Price</option>
-					<option value="saab">20000</option>
-					<option value="mercedes">8000</option>
-					<option value="audi">5000</option>
+
+			<li><select id="maxPrice">
+					<option value="0">Max Value</option>
+					<option value="100000">100000</option>
+					<option value="200000">500000</option>
+					<option value="1500000">1500000</option>
+
 			</select></li>
-			<li><button>FIND VEHICLES</button></li>
+			<li><button type="button" id="search" value="Search">FIND VEHICLES</button></li>
 		</ul>
 	</div>
 
-	<div class="search-car-list">
-		<section class="regular slider">
-			<div>
-				<img src="./imgs/sh1.jpg">
-			</div>
-			<div>
-				<img src="./imgs/sh2.jpg">
-			</div>
-			<div>
-				<img src="./imgs/sh7.jpg">
-			</div>
-			<div>
-				<img src="./imgs/sh4.jpg">
-			</div>
-			<div>
-				<img src="./imgs/sh5.jpg">
-			</div>
-			<div>
-				<img src="./imgs/sh6.jpg">
-			</div>
+	<div class="search-car-list" >
+		<section id="search-car" class="regular slider">				
+					
+					
 		</section>
 	</div>
 
@@ -146,11 +130,128 @@
 	</div>
 
 
+	<script src="https://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"></script>
+<script src="./slick/slick.js" type="text/javascript" charset="utf-8"></script>
+<script src="./js/slider.js" type="text/javascript" charset="utf-8"></script>
+<script>
+  var entireData=[];
+  var finalData=[];
+  var uniqueCarBrands=[];
+  var uniqueCarTypes=[];
+  var count=0;
+ $.getJSON('carco.json', function(data) 
+               {
+	            // console.log(data.cars.length); 
+	             count=data.cars.length;
+	             entireData=data.cars;
+                // console.log(entireData[0]);
+	            // console.log(entireData);
+	            var  carBrandscount =0 ;
+	            var carBrands=[];
+	            var carTypes=[];
+	                
+	             /* Fetching all brand names */
+	         	 var j=0;          
+	             for (i = 0; i < count; i++)
+	             {
+	            	
+	            		
+	            			carBrands[j]=entireData[i].name;
+	            			carTypes[j]=entireData[i].type;
+	            		    j++;
+	              } 
+	            
+	             var uniqueCarBrands= carBrands.filter(function(itm,i,carBrands)
+	            		 {
+	            	       return i==carBrands.indexOf(itm);
+	            	 
+	            		 });
+	         //    console.log(uniqueCarBrands); //populate
+	             
+	             var uniqueCarTypes= carTypes.filter(function(itm,i,carTypes)
+	            		 {
+	            	       return i==carTypes.indexOf(itm);
+	            	 
+	            		 });
+	         //    console.log(uniqueCarTypes); //populate
+	             var $carBrandsDD= $("#carBrands");
+	             for (var i=0; i< uniqueCarBrands.length ;i++ )
+	            	 {
+	            	 $carBrandsDD.append($("<option />").val(uniqueCarBrands[i]).text(uniqueCarBrands[i]));	             
 
-	<script src="https://code.jquery.com/jquery-2.2.0.min.js"
-		type="text/javascript"></script>
-	<script src="./slick/slick.js" type="text/javascript" charset="utf-8"></script>
-	<script src="./js/slider.js" type="text/javascript" charset="utf-8"></script>
+	            	 }
+	           
+	             var $carTypesDD= $("#carTypes");
+	             for (var i=0; i< uniqueCarTypes.length ;i++ )
+	            	 {
+	            	 $carTypesDD.append($("<option />").val(uniqueCarTypes[i]).text(uniqueCarTypes[i]));	             
+
+	            	 }
+	             
+	             
+	             /*Getting Result*/
+	             
+	             var brandState = $("#carBrands").children(":selected").attr("value");
+	             var typeState = $("#carTypes").children(":selected").attr("value");
+	             var minState = $("#minPrice").children(":selected").attr("value");
+	             var maxState = $("#maxPrice").children(":selected").attr("value");
+	            
+	             
+	             /*
+	             if()  Getting Results for no select
+	            	 {
+	            	 
+	            	 }
+	             
+	             else*/
+	             $("#search").click(function() { 
+	            	
+	            	 var $sectionId = $("#search-car") 
+	            	
+	            	 if(brandState == "All Brands" && typeState=="All Types" && minState =="0" && maxState =="0")
+	            	 {
+	            	 	for(var i=0;i<entireData.length;i++ ){
+	            	 		// $carTypesDD.append($("<option />").val(uniqueCarTypes[i]).text(uniqueCarTypes[i]));	    
+	            	 		
+	            	 		$sectionId.append($("<div>").append($("<img>").attr('src', entireData[i].image1)));           	 		
+	            	 		
+	            	 		
+	            	 		
+	            	 		//$sectionId.append($("</div>"));
+	            	 		
+	            	 		
+	            	 	}
+	            	 
+	            	 	 $(".regular").slick({
+	 	            		
+	 	            	    dots: false,
+	 	            	    infinite: true,
+	 	            	    slidesToShow: 4,
+	 	            	    slidesToScroll: 1
+	 	            	  });        
+	            	 	
+	            	 	
+	            	 	    
+	            	 	   
+	            	 
+	            	 
+	            	 }
+	                
+	             }); 
+	             /*
+	               
+	             */
+               }); 
+ console.log("regular starts") ;
+
+ 
+ 
+	
+</script>	
+
+
+
+ 
 
 </body>
 </html>
